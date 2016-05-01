@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include <iostream>
 
 #include "csvfile.h"
@@ -19,4 +18,3 @@ int main(int argc, char** argv)
     log_file.close();
     return 0;
 }
-

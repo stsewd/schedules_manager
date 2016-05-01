@@ -22,8 +22,8 @@ public:
 // TODO private:
     void set_errorlog(Log* log);
     void join_materias_docentes();
+    void init_streams();
 };
 
 
 #endif /* MATERIA_H */
-

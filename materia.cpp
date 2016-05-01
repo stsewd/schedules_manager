@@ -25,8 +25,8 @@ void Materia::set_errorlog(Log* log)
 void Materia::join_materias_docentes()
 {
     int num_docentes = 0;
-    flujo_salida_materias.open(MATERIAS_PATH);
-    flujo_salida_docentes.open(DOCENTES_PATH);
+    init_streams();
+    
     std::string materia_record;
     std::vector<std::string> materia_records;
     while ((materia_record = csv_materias.next_record()) != "") {
@@ -35,12 +35,21 @@ void Materia::join_materias_docentes()
             errorlog->write("Formato no correcto. Data: " + materia_record + "\n");
             continue;
         }
+        
         auto docente_records = docentes.search_id(materia_records[2]);
-        if (docente_records.empty())
-            return;
+        if (docente_records.empty()) {
+            errorlog->write("Id no válido o no encontrado. Data: " + materia_records[2] + "\n");
+            continue;
+        }
         flujo_salida_docentes << docente_records[0] << "," << docente_records[1] << std::endl;
         flujo_salida_materias << materia_records[0] << "," << materia_records[1] << "," << ++num_docentes << std::endl;
     }
+}
+
+void Materia::init_streams() 
+{
+    flujo_salida_materias.open(MATERIAS_PATH);
+    flujo_salida_docentes.open(DOCENTES_PATH);
 }
 
 std::vector<std::string> Materia::parser_record(std::string record)
