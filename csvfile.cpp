@@ -18,7 +18,7 @@ std::string Csvfile::next_record()
     return line;
 }
 
-void Csvfile::begin()
+void Csvfile::init()
 {
     flujo_entrada.seekg(0);
     next_record();

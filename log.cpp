@@ -1,10 +1,13 @@
+/**
+ * Archivo donde se guardan los errores que puedan ocurrir en el transcurso
+ * del programa.
+ */
+
 #include "log.h"
 
 void Log::init() 
 {
     flujo_salida.open(PATH);
-    flujo_salida.close();
-    flujo_salida.open(PATH, std::ios_base::app);
 }
 
 void Log::write(std::string msj)

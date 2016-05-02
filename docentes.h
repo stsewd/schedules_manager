@@ -1,5 +1,5 @@
-#ifndef DOCENTE_H
-#define DOCENTE_H
+#ifndef DOCENTES_H
+#define DOCENTES_H
 
 #include <vector>
 #include <string>
@@ -16,6 +16,7 @@ public:
     void set_docentes_file(std::string path);
     std::vector<std::string> search_id(std::string id);
     std::vector<std::string> parser_record(std::string record);
+    void finish();
 };
 
 #endif /* DOCENTE_H */

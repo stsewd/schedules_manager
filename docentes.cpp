@@ -1,6 +1,6 @@
 #include <regex>
 
-#include "docente.h"
+#include "docentes.h"
 #include "csvfile.h"
 #include "log.h"
 
@@ -8,7 +8,7 @@ std::vector<std::string> Docente::search_id(std::string id)
 {   
     std::string line;
     std::vector<std::string> records;
-    csv_docentes.begin();
+    csv_docentes.init();
     while ((line = csv_docentes.next_record()) != "") {
         records = parser_record(line);
         if (!records.empty() && records[0] == id)
@@ -39,4 +39,9 @@ std::vector<std::string> Docente::parser_record(std::string record)
     for (int i = 1; i < 3; i++)
         records.push_back(groups[i]);
     return records;
+}
+
+void Docente::finish()
+{
+    csv_docentes.close();
 }

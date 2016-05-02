@@ -10,7 +10,7 @@ private:
 public:
     void set_file(std::string path);
     std::string next_record();
-    void begin();
+    void init();
     void close();
 private:
     void open_file(std::string path);
