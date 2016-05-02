@@ -77,6 +77,20 @@ std::vector<std::string> Materias::parser_record(std::string record)
     return records;
 }
 
+std::vector<std::string> Materias::parser_record_inner(std::string record)
+{
+    std::vector<std::string> records;
+    std::regex regex_materia("^([^,]*),(\\d),(\\d*)$");
+    std::smatch groups;
+    
+    if (!std::regex_match(record, groups, regex_materia))
+       return records; 
+    
+    for (int i = 1; i < 4; i++)
+        records.push_back(groups[i]);
+    return records;
+}
+
 void Materias::initsearch()
 {
     csv_materias_entrada.set_file(MATERIAS_PATH);
@@ -90,14 +104,15 @@ void Materias::finishsearch()
 
 std::vector<std::string> Materias::next_materia(int minhours, int maxhours)
 {
-    while (true) {
-        auto materia_record = parser_record(csv_materias_entrada.next_record());
-        if (materia_record.empty())
-            return {};
+    std::string line;
+    std::vector<std::string> materia_record;
+    while ((line = csv_materias_entrada.next_record()) != "") {
+        materia_record = parser_record_inner(line);
         std::istringstream iss(materia_record[1]);
         int hours;
         iss >> hours;
         if (hours >= minhours && hours <= maxhours)
             return materia_record;
     }
+    return {};
 }

@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     horario.set_estudiantes_file("");
     horario.set_materias_file("resources/materias.csv");
 
-    horario.init();
-    horario.finish();
+    horario.generate();
+    horario.show();
     return 0;
 }

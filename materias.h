@@ -29,6 +29,7 @@ public:
 // TODO private:
     void join_materias_docentes();
     void init_streams();
+    std::vector<std::string> parser_record_inner(std::string record);
 };
 
 
