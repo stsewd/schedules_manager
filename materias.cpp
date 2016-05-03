@@ -7,7 +7,7 @@
 
 #include "materias.h"
 #include "docentes.h"
-#include "estudiante.h"
+#include "estudiantes.h"
 
 void Materias::set_docentes_file(std::string path)
 {
