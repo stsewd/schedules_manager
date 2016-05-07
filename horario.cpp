@@ -1,4 +1,5 @@
 #include "horario.h"
+#include "materias.h"
 #include <iostream>
 #include <string>
 #include <array>
@@ -43,18 +44,18 @@ void Horario::generate()
 
 void Horario::add_horario()
 {
-    std::array<std::array<std::string, 5>, 10> horario;
+    std::array<std::array<Materia, 5>, 10> horario;
     horarios.push_back(horario);
 }
 
 void Horario::put_materias(int minhours, int maxhours)
 {
-    // TODO cleaning up all this sh*t code
+    // TODO clean up all this sh*t code
     std::vector<std::string> materia_record;
     int num_horas;
     int num_horas_aux;
     int dia_actual;
-    int indice_horario = 0;
+    int indice_horario;
     materias.initsearch();
     while (!(materia_record = materias.next_materia(minhours, maxhours)).empty()) {        
         num_horas = atoi(materia_record[1].c_str());
@@ -74,8 +75,6 @@ void Horario::put_materias(int minhours, int maxhours)
             else
                 dia_actual += 1;
         }
-        if (num_horas > 0)
-            logfile.write("No se pudo completar las horas de: " + materia_record[0] + " - " + materia_record[1] + "\n");
     }
     materias.finishsearch();
 }
@@ -94,14 +93,13 @@ void Horario::put_materia(Dia dia, std::string materia, int* horas, int indice_h
     int dia_int = get_dia(dia);
     int num_horas_max = 2;
     for (int i = 0; i < NUM_HORAS; i++) {
-        if (horarios[indice_horario][i][dia_int] == "") {
-            horarios[indice_horario][i][dia_int] = materia;
+        if (horarios[indice_horario][i][dia_int].nombre == "") {
+            horarios[indice_horario][i][dia_int].nombre = materia;
             *horas -= 1;
             num_horas_max--;
             if (num_horas_max > 0 && *horas > 0)
                 continue;
-            else
-                return;
+            return;
         }
     }
 }
@@ -128,8 +126,8 @@ void Horario::reverse(int indice_horario)
 {
     for (int i = 0; i < NUM_HORAS; i++)
         for (int j = 0; j < 5; j++)
-            if (horarios[indice_horario][i][j] == ".")
-                horarios[indice_horario][i][j] = "";
+            if (horarios[indice_horario][i][j].nombre == ".")
+                horarios[indice_horario][i][j].nombre = "";
 }
 
 
@@ -151,23 +149,27 @@ int Horario::get_dia(Dia dia)
 
 void Horario::showall()
 {
+    flujo_salida_horarios.open(HORARIOS_PATH);
     for (int i = 0; i < horarios.size(); i++) {
         show(i);
-        std::cout << std::endl << std::endl;
+        flujo_salida_horarios << std::endl << std::endl;
     }
+    flujo_salida_horarios.close();
 }
 
 void Horario::show(int index)
 {
     for (int  j = 0; j < 5; j++) {
+        flujo_salida_horarios << get_dia(dias[j]) << ",";
         for (int i = 0; i < NUM_HORAS; i++)
-            std::cout << horarios[index][i][j] << " | ";
-        std::cout << std::endl;
+            flujo_salida_horarios << horarios[index][i][j].nombre << ",";
+        flujo_salida_horarios << std::endl;
     }
 }
 
 void Horario::finish()
 {
+    // horarios.clear();
     materias.finish();
     logfile.close();
 }

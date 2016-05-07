@@ -11,7 +11,9 @@ const Dia dias[] = {Dia::lunes, Dia::martes, Dia::miercoles, Dia::jueves, Dia::v
 
 struct Horario {
 private:
-    std::vector<std::array<std::array<std::string, 5>, 10>> horarios;
+    const std::string HORARIOS_PATH = "horario/horarios.txt";
+    std::vector<std::array<std::array<Materia, 5>, 10>> horarios;
+    std::ofstream flujo_salida_horarios;
     Materias materias;
     const int NUM_HORAS = 10;
     Log logfile;

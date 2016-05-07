@@ -52,8 +52,21 @@ void Materias::join_materias_docentes()
 void Materias::init_streams() 
 {
     flujo_salida_materias.open(MATERIAS_PATH);
+    addcabecera_materias();
     flujo_salida_docentes.open(DOCENTES_PATH);
+    addcabecera_docentes();
 }
+
+void Materias::addcabecera_docentes()
+{
+    flujo_salida_docentes << "cedula" << "," << "nombre" << std::endl;
+}
+
+void Materias::addcabecera_materias()
+{
+    flujo_salida_materias << "nombre" << "," << "horas" << "," << "profesor" << std::endl;
+}
+
 
 void Materias::finish()
 {
