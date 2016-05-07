@@ -26,7 +26,7 @@ void Materias::set_errorlog(Log* log)
 
 void Materias::join_materias_docentes()
 {
-    int num_docentes = 0;
+    // int num_docentes = 0;
     init_streams();
     
     std::string line;
@@ -44,8 +44,9 @@ void Materias::join_materias_docentes()
             continue;
         }
         // TODO se puede omitir el número de docente, luego se recupera según la línea?
-        flujo_salida_docentes << docente_record[0] << "," << docente_record[1] << std::endl;
-        flujo_salida_materias << materia_record[0] << "," << materia_record[1] << "," << ++num_docentes << std::endl;
+        if (!existe_docente(docente_record[0]))
+            flujo_salida_docentes << docente_record[0] << "," << docente_record[1] << std::endl;
+        flujo_salida_materias << materia_record[0] << "," << materia_record[1] << "," << docente_record[0] << std::endl;
     }
 }
 
@@ -67,6 +68,25 @@ void Materias::addcabecera_materias()
     flujo_salida_materias << "nombre" << "," << "horas" << "," << "profesor" << std::endl;
 }
 
+bool Materias::existe_docente(std::string docente_id)
+{
+    std::ifstream docentes_new;
+    char line[1000] = "";
+    
+    docentes_new.open(DOCENTES_PATH);
+    docentes_new.getline(line, sizeof(line));  // Leer cabecera
+    
+    while (!docentes_new.eof()) {
+        docentes_new.getline(line, sizeof(line));
+        std::string str = line;
+        if (str.find(docente_id) != std::string::npos) {
+            docentes_new.close();
+            return true;
+        }
+    }
+    docentes_new.close();
+    return false;
+}
 
 void Materias::finish()
 {

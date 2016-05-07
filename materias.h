@@ -7,6 +7,7 @@
 struct Materia {
     std::string nombre;
     std::string aula;
+    std::string docente_id;
 };
 
 struct Materias {
@@ -33,6 +34,7 @@ public:
     void finishsearch();
     void join_materias_docentes();
 private:
+    bool existe_docente(std::string docente_id);
     void init_streams();
     void addcabecera_docentes();
     void addcabecera_materias();
