@@ -59,8 +59,12 @@ void Horario::put_materias(int minhours, int maxhours)
     materias.initsearch();
     while (!(materia_record = materias.next_materia(minhours, maxhours)).empty()) {        
         num_horas = atoi(materia_record[1].c_str());
+        Materia materia;
+        materia.nombre = materia_record[0];
+        materia.docente_id = materia_record[2];
+        
         indice_horario = 0;
-        while (!can_put_materia(num_horas, indice_horario)) {
+        while (!can_put_materia(num_horas, indice_horario, materia)) {
             if (indice_horario == horarios.size() - 1)
                 add_horario();
             indice_horario++;
@@ -69,7 +73,7 @@ void Horario::put_materias(int minhours, int maxhours)
         dia_actual = 0;
         while (dia_actual < 5 && num_horas > 0) {
             num_horas_aux = num_horas;
-            put_materia(dias[dia_actual], materia_record[0], &num_horas, indice_horario);
+            put_materia(dias[dia_actual], materia, &num_horas, indice_horario);
             if (num_horas < num_horas_aux)
                 dia_actual += 2;
             else
@@ -83,18 +87,19 @@ void Horario::discard_materias()
 {
     std::vector<std::string> materia_record;
     materias.initsearch();
-    while (!(materia_record = materias.next_materia(7, 10000)).empty())
+    while (!(materia_record = materias.next_materia(7, 100000)).empty())
         logfile.write("Error en carga horaria. Data: " + materia_record[0] + " - " + materia_record[1] + "\n");
     materias.finishsearch();
 }
 
-void Horario::put_materia(Dia dia, std::string materia, int* horas, int indice_horario)
+void Horario::put_materia(Dia dia, Materia materia, int* horas, int indice_horario)
 {
     int dia_int = get_dia(dia);
     int num_horas_max = 2;
     for (int i = 0; i < NUM_HORAS; i++) {
-        if (horarios[indice_horario][i][dia_int].nombre == "") {
-            horarios[indice_horario][i][dia_int].nombre = materia;
+        if (horarios[indice_horario][i][dia_int].nombre == "" && hora_libre_docente(i, dia_int, materia.docente_id)) {
+            horarios[indice_horario][i][dia_int].nombre = materia.nombre;
+            horarios[indice_horario][i][dia_int].docente_id = materia.docente_id;
             *horas -= 1;
             num_horas_max--;
             if (num_horas_max > 0 && *horas > 0)
@@ -104,13 +109,24 @@ void Horario::put_materia(Dia dia, std::string materia, int* horas, int indice_h
     }
 }
 
-bool Horario::can_put_materia(int num_horas, int indice_horario)
+bool Horario::hora_libre_docente(int hora, int dia, std::string docente_id)
+{
+    for (int i = 0; i < horarios.size(); i++) {
+        if (horarios[i][hora][dia].docente_id == docente_id)
+            return false;
+    }
+    return true;
+}
+
+
+bool Horario::can_put_materia(int num_horas, int indice_horario, Materia materia)
 {
     int dia_actual = 0;
     int num_horas_aux = 0;
     while (dia_actual < 5 && num_horas > 0) {
         num_horas_aux = num_horas;
-        put_materia(dias[dia_actual], ".", &num_horas, indice_horario);
+        materia.nombre = ".";
+        put_materia(dias[dia_actual], materia, &num_horas, indice_horario);
         if (num_horas < num_horas_aux)
             dia_actual += 2;
         else
@@ -126,8 +142,10 @@ void Horario::reverse(int indice_horario)
 {
     for (int i = 0; i < NUM_HORAS; i++)
         for (int j = 0; j < 5; j++)
-            if (horarios[indice_horario][i][j].nombre == ".")
+            if (horarios[indice_horario][i][j].nombre == ".") {
                 horarios[indice_horario][i][j].nombre = "";
+                horarios[indice_horario][i][j].docente_id = "";
+            }
 }
 
 
@@ -152,7 +170,7 @@ void Horario::showall()
     flujo_salida_horarios.open(HORARIOS_PATH);
     for (int i = 0; i < horarios.size(); i++) {
         show(i);
-        flujo_salida_horarios << std::endl << std::endl;
+        flujo_salida_horarios << std::endl;
     }
     flujo_salida_horarios.close();
 }
@@ -160,9 +178,10 @@ void Horario::showall()
 void Horario::show(int index)
 {
     for (int  j = 0; j < 5; j++) {
-        flujo_salida_horarios << get_dia(dias[j]) << ",";
-        for (int i = 0; i < NUM_HORAS; i++)
-            flujo_salida_horarios << horarios[index][i][j].nombre << ",";
+        for (int i = 0; i < NUM_HORAS; i++) {
+            flujo_salida_horarios << horarios[index][i][j].nombre << "|";
+            flujo_salida_horarios << horarios[index][i][j].docente_id << ",";
+        }
         flujo_salida_horarios << std::endl;
     }
 }

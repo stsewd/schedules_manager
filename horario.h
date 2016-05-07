@@ -32,8 +32,9 @@ private:
     void finish();
     void discard_materias();
     void put_materias(int minhours, int maxhours);
-    void put_materia(Dia dia, std::string materia, int* horas, int indice_horario);
-    bool can_put_materia(int num_horas, int indice_horario);
+    void put_materia(Dia dia, Materia materia, int* horas, int indice_horario);
+    bool can_put_materia(int num_horas, int indice_horario, Materia materia);
+    bool hora_libre_docente(int hora, int dia, std::string docente_id);
     void reverse(int indice_horario);
     int get_dia(Dia dia);
 };
