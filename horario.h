@@ -16,6 +16,7 @@ private:
     const std::string HORARIOS_PATH = "horario/horarios.txt";
     const std::string ESTUDIANTES_PATH = "horario/estudiantes.csv";
     std::vector<std::array<std::array<Materia, 5>, 10>> horarios;
+    std::vector<Aula> aulas_v;
     std::ofstream flujo_salida_horarios;
     std::ofstream flujo_salida_estudiantes;
     Materias materias;
@@ -35,8 +36,13 @@ public:
 private:
     bool existe_materia(std::string materia);
     bool existe_en_horario(int index, std::string materia);
+    void put_in_aulas();
+    void ubicar_aula(std::string materia, int capacidad_max);
+    int num_alumnos_in(std::string materia);
+    void rellenar_materia(std::string aula, std::string materia);
     void matricular_estudiantes();
     void add_horario();
+    int capacidad_maxima();
     void init();
     void finish();
     void discard_materias();

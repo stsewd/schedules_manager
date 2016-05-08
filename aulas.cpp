@@ -40,7 +40,7 @@ std::vector<Aula> Aulas::get_aulas()
 std::vector<std::string> Aulas::parser_record(std::string record)
 {
     std::vector<std::string> records;
-    std::regex regex_docente("^(\\w\\d+),(\\d+)$");
+    std::regex regex_docente("^(\\w+|\\w+\\d+),(\\d+)$");
     std::smatch groups;
     
     if (!std::regex_match(record, groups, regex_docente))

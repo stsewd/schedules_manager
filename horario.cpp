@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <array>
+#include <algorithm>
 
 void Horario::set_aulas_file(std::string path)
 {
@@ -40,7 +41,7 @@ void Horario::generate()
     put_materias(3, 4);
     put_materias(1, 2);
     matricular_estudiantes();
-    // colocar en salas
+    put_in_aulas();
     showall();
     finish();
 }
@@ -202,6 +203,79 @@ bool Horario::existe_en_horario(int index, std::string materia)
         }
     }
     return false;
+}
+
+void Horario::put_in_aulas()
+{
+    aulas.set_logfile(&logfile);
+    aulas_v = aulas.get_aulas();
+    std::sort(aulas_v.begin(), aulas_v.end());
+    
+    int capacidad_max = capacidad_maxima();
+    for (int i = 0; i < horarios.size(); i++) {
+        for (int hora = 0; hora < 10; hora++) {
+            for (int dia = 0; dia < 5; dia++) {
+                if (horarios[i][hora][dia].aula == "") {
+                    ubicar_aula(horarios[i][hora][dia].nombre, capacidad_max);
+                }
+            }
+        }
+    }
+}
+
+int Horario::capacidad_maxima()
+{
+    return aulas_v[aulas_v.size() - 1].capacidad;
+}
+
+void Horario::ubicar_aula(std::string materia, int capacidad_max)
+{
+    int num_alumnos = num_alumnos_in(materia);
+    if (num_alumnos == 0) {
+        logfile.write("Materia sin alumnos. Data: " + materia + "\n");
+        rellenar_materia("Sin aula", materia);
+        return;
+    }
+    
+    if (num_alumnos > capacidad_max)
+        logfile.write("Numero de alumnos excedido. Materia: " + materia + ". Alumnos: " + std::to_string(num_alumnos) + "\n");
+    
+    int indice_aula = 0;
+    bool ocupada = true;  // El aula ya esta ocupada en este horario?
+    while (indice_aula < aulas_v.size() && aulas_v[indice_aula].capacidad < num_alumnos) {
+        // Probar que no se cruce ¿aqui?
+        ocupada = false;
+        indice_aula++;
+    }
+    rellenar_materia(aulas_v[indice_aula].codigo, materia);
+}
+
+int Horario::num_alumnos_in(std::string materia)
+{
+    int num = 0;
+    Estudiantes alumnos_temp;
+    alumnos_temp.set_estudiantes_file(ESTUDIANTES_PATH);
+    alumnos_temp.set_logfile(&logfile);
+    
+    alumnos_temp.initsearch();
+    std::vector<std::string> record;
+    while (!(record = alumnos_temp.next_estudiante(materia)).empty())
+        num++;
+    alumnos_temp.finishsearch();
+    return num;
+}
+
+void Horario::rellenar_materia(std::string aula, std::string materia)
+{
+    for (int i = 0; i < horarios.size(); i++) {
+        for (int hora = 0; hora < 10; hora++) {
+            for (int dia = 0; dia < 5; dia++) {
+                if (horarios[i][hora][dia].nombre == materia) {
+                    horarios[i][hora][dia].aula = aula;
+                }
+            }
+        }
+    }
 }
 
 

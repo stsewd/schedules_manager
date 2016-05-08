@@ -9,6 +9,9 @@
 struct Aula {
     std::string codigo;
     int capacidad;
+    bool operator < (const Aula& aula) const {
+        return capacidad < aula.capacidad;
+    }
 };
 
 struct Aulas {
