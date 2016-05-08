@@ -40,7 +40,9 @@ private:
     void ubicar_aula(std::string materia, int capacidad_max);
     int num_alumnos_in(std::string materia);
     void rellenar_materia(std::string aula, std::string materia);
+    bool can_rellenar_materia(std::string aula, std::string materia);
     void matricular_estudiantes();
+    bool aula_disponible(std::string aula, int hora, int dia);
     void add_horario();
     int capacidad_maxima();
     void init();

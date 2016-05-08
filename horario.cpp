@@ -215,7 +215,7 @@ void Horario::put_in_aulas()
     for (int i = 0; i < horarios.size(); i++) {
         for (int hora = 0; hora < 10; hora++) {
             for (int dia = 0; dia < 5; dia++) {
-                if (horarios[i][hora][dia].aula == "") {
+                if (horarios[i][hora][dia].nombre != "" && horarios[i][hora][dia].aula == "") {
                     ubicar_aula(horarios[i][hora][dia].nombre, capacidad_max);
                 }
             }
@@ -231,24 +231,56 @@ int Horario::capacidad_maxima()
 void Horario::ubicar_aula(std::string materia, int capacidad_max)
 {
     int num_alumnos = num_alumnos_in(materia);
+    
     if (num_alumnos == 0) {
         logfile.write("Materia sin alumnos. Data: " + materia + "\n");
-        rellenar_materia("Sin aula", materia);
+        rellenar_materia("-", materia);
+        return;
+    } else if (num_alumnos > capacidad_max) {
+        logfile.write("Numero de alumnos excedido. Materia: " + materia + ". Alumnos: " + std::to_string(num_alumnos) + "\n");
+        rellenar_materia("-", materia);
         return;
     }
     
-    if (num_alumnos > capacidad_max)
-        logfile.write("Numero de alumnos excedido. Materia: " + materia + ". Alumnos: " + std::to_string(num_alumnos) + "\n");
-    
     int indice_aula = 0;
     bool ocupada = true;  // El aula ya esta ocupada en este horario?
-    while (indice_aula < aulas_v.size() && aulas_v[indice_aula].capacidad < num_alumnos) {
-        // Probar que no se cruce ¿aqui?
-        ocupada = false;
+    while (indice_aula < aulas_v.size()) {
+        if (can_rellenar_materia(aulas_v[indice_aula].codigo, materia) && aulas_v[indice_aula].capacidad >= num_alumnos) {
+            ocupada = false;
+            break;
+        }
         indice_aula++;
     }
-    rellenar_materia(aulas_v[indice_aula].codigo, materia);
+    if (!ocupada)
+        rellenar_materia(aulas_v[indice_aula].codigo, materia);
+    else {
+        logfile.write("Aula no disponible para la materia: " + materia + "\n");
+        rellenar_materia("-", materia);
+    }
 }
+
+bool Horario::can_rellenar_materia(std::string aula, std::string materia)
+{
+    for (int i = 0; i < horarios.size(); i++) {
+        for (int hora = 0; hora < 10; hora++) {
+            for (int dia = 0; dia < 5; dia++) {
+                if (horarios[i][hora][dia].nombre == materia && !aula_disponible(aula, hora, dia))
+                    return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool Horario::aula_disponible(std::string aula, int hora, int dia)
+{
+    for (int i = 0; i < horarios.size(); i++) {
+        if (horarios[i][hora][dia].aula == aula)
+            return false;
+    }
+    return true;
+}
+
 
 int Horario::num_alumnos_in(std::string materia)
 {
