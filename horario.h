@@ -54,6 +54,7 @@ private:
     bool hora_libre_docente(int hora, int dia, std::string docente_id);
     void reverse(int indice_horario);
     int get_dia(Dia dia);
+    void addcabecera_estudiantes();
 };
 
 #endif /* HORARIO_H */

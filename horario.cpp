@@ -171,6 +171,7 @@ int Horario::get_dia(Dia dia)
 void Horario::matricular_estudiantes()
 {
     flujo_salida_estudiantes.open(ESTUDIANTES_PATH);
+    addcabecera_estudiantes();
     std::vector<std::string> record;
     estudiantes.initsearch();
     estudiantes.set_logfile(&logfile);
@@ -183,6 +184,11 @@ void Horario::matricular_estudiantes()
     }
     flujo_salida_estudiantes.close();
     estudiantes.finishsearch();
+}
+
+void Horario::addcabecera_estudiantes()
+{
+    flujo_salida_estudiantes << "cedula" << "," << "materia" << std::endl;
 }
 
 bool Horario::existe_materia(std::string materia)
@@ -335,6 +341,7 @@ void Horario::show(int index)
 
 void Horario::finish()
 {
+    aulas_v.clear();
     horarios.clear();
     materias.finish();
     logfile.close();

@@ -50,6 +50,3 @@ std::vector<std::string> Aulas::parser_record(std::string record)
         records.push_back(groups[i]);
     return records;
 }
-
-
-
