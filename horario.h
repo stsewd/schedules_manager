@@ -3,7 +3,9 @@
 
 #include "csvfile.h"
 #include "materias.h"
+#include "estudiantes.h"
 #include "log.h"
+#include "aulas.h"
 #include <array>
 
 enum class Dia {lunes, martes, miercoles, jueves, viernes};
@@ -12,9 +14,13 @@ const Dia dias[] = {Dia::lunes, Dia::martes, Dia::miercoles, Dia::jueves, Dia::v
 struct Horario {
 private:
     const std::string HORARIOS_PATH = "horario/horarios.txt";
+    const std::string ESTUDIANTES_PATH = "horario/estudiantes.csv";
     std::vector<std::array<std::array<Materia, 5>, 10>> horarios;
     std::ofstream flujo_salida_horarios;
+    std::ofstream flujo_salida_estudiantes;
     Materias materias;
+    Estudiantes estudiantes;
+    Aulas aulas;
     const int NUM_HORAS = 10;
     Log logfile;
 public:
@@ -27,6 +33,9 @@ public:
     void show(int index);
     void showall();
 private:
+    bool existe_materia(std::string materia);
+    bool existe_en_horario(int index, std::string materia);
+    void matricular_estudiantes();
     void add_horario();
     void init();
     void finish();

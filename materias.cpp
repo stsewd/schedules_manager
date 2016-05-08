@@ -43,7 +43,6 @@ void Materias::join_materias_docentes()
             errorlog->write("Id no válido o no encontrado. Data: " + materia_record[2] + "\n");
             continue;
         }
-        // TODO se puede omitir el número de docente, luego se recupera según la línea?
         if (!existe_docente(docente_record[0]))
             flujo_salida_docentes << docente_record[0] << "," << docente_record[1] << std::endl;
         flujo_salida_materias << materia_record[0] << "," << materia_record[1] << "," << docente_record[0] << std::endl;

@@ -6,7 +6,7 @@
 
 void Horario::set_aulas_file(std::string path)
 {
-    // TODO
+    aulas.set_aulas_file(path);
 }
 
 void Horario::set_docentes_file(std::string path)
@@ -16,7 +16,7 @@ void Horario::set_docentes_file(std::string path)
 
 void Horario::set_estudiantes_file(std::string path)
 {
-    // TODO
+    estudiantes.set_estudiantes_file(path);
 }
 
 void Horario::set_materias_file(std::string path)
@@ -39,6 +39,9 @@ void Horario::generate()
     put_materias(5, 6);
     put_materias(3, 4);
     put_materias(1, 2);
+    matricular_estudiantes();
+    // colocar en salas
+    showall();
     finish();
 }
 
@@ -148,7 +151,6 @@ void Horario::reverse(int indice_horario)
             }
 }
 
-
 int Horario::get_dia(Dia dia)
 {
     switch (dia) {
@@ -165,6 +167,44 @@ int Horario::get_dia(Dia dia)
     }
 }
 
+void Horario::matricular_estudiantes()
+{
+    flujo_salida_estudiantes.open(ESTUDIANTES_PATH);
+    std::vector<std::string> record;
+    estudiantes.initsearch();
+    estudiantes.set_logfile(&logfile);
+    while (!(record = estudiantes.next_estudiante()).empty()) {
+        if (existe_materia(record[1])) {
+            flujo_salida_estudiantes << record[0] << ",";
+            flujo_salida_estudiantes << record[1] << std::endl;
+        } else
+            logfile.write("Estudiante ID: " + record[0] + " no matriculado. Materia no existente. Data: " + record[1] + "\n");
+    }
+    flujo_salida_estudiantes.close();
+    estudiantes.finishsearch();
+}
+
+bool Horario::existe_materia(std::string materia)
+{
+    for (int i = 0; i < horarios.size(); i++) {
+        if (existe_en_horario(i, materia))
+            return true;
+    }
+    return false;
+}
+
+bool Horario::existe_en_horario(int index, std::string materia)
+{
+    for (int hora = 0; hora < NUM_HORAS; hora++) {
+        for (int dia = 0; dia < 5; dia++) {
+            if (horarios[index][hora][dia].nombre == materia)
+                return true;
+        }
+    }
+    return false;
+}
+
+
 void Horario::showall()
 {
     flujo_salida_horarios.open(HORARIOS_PATH);
@@ -180,7 +220,8 @@ void Horario::show(int index)
     for (int  j = 0; j < 5; j++) {
         for (int i = 0; i < NUM_HORAS; i++) {
             flujo_salida_horarios << horarios[index][i][j].nombre << "|";
-            flujo_salida_horarios << horarios[index][i][j].docente_id << ",";
+            flujo_salida_horarios << horarios[index][i][j].docente_id << "|";
+            flujo_salida_horarios << horarios[index][i][j].aula << ",";
         }
         flujo_salida_horarios << std::endl;
     }
@@ -188,7 +229,7 @@ void Horario::show(int index)
 
 void Horario::finish()
 {
-    // horarios.clear();
+    horarios.clear();
     materias.finish();
     logfile.close();
 }
