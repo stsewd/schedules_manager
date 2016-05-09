@@ -1,5 +1,6 @@
 #include <fstream>
 #include <string>
+#include <iostream>
 
 #include "csvfile.h"
 
@@ -10,7 +11,7 @@ void Csvfile::open_file(std::string path)
 
 std::string Csvfile::next_record()
 {
-    char line[1000] = "";
+    char line[10000] = "";
     if (!flujo_entrada.eof()) {
         flujo_entrada.getline(line, sizeof(line));
         return line;
@@ -34,3 +35,12 @@ void Csvfile::close()
 {
     flujo_entrada.close();
 }
+
+void Csvfile::show_file()
+{
+    flujo_entrada.seekg(0);
+    std::string line;
+    while ((line = next_record()) != "")
+        std::cout << line << std::endl;
+}
+

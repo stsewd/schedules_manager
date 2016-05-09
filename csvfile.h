@@ -5,15 +5,14 @@
 #include <fstream>
 
 struct Csvfile {
-private:
     std::ifstream flujo_entrada;
-public:
+    
     void set_file(std::string path);
     std::string next_record();
     void init();
     void close();
-private:
     void open_file(std::string path);
+    void show_file();
 };
 
 #endif /* MATERIA_H */
