@@ -33,13 +33,13 @@ void mostrar_horario_docente(Usuario* usuario);
 void mostrar_horario_estudiante(Usuario* usuario);
 void mostrar_horario_sala(Usuario* usuario);
 void mostrar_horario_materia(Usuario* usuario);
+void mostrar_lista_alumnos(Usuario* usuario);
+
 string consultar_exportar();
 void exportar(Usuario* usuario);
 
 int main(int argc, char** argv)
 {
-    // TODO listar estudiantes de una materia, agregar opcion al menu?
-    // TODO Redactar ayuda
     // TODO implementar caché en busquedas
     int opcion = -1;
     while (opcion != 4) {
@@ -89,7 +89,8 @@ void show_menu_usuario()
     cout << "2) Ver horario de un estudiante" << endl;
     cout << "3) Ver horario de una sala" << endl;
     cout << "4) Ver horario de una materia" << endl;
-    cout << "5) Atras" << endl;
+    cout << "5) Ver alumnos de una materia" << endl;
+    cout << "6) Atras" << endl;
 }
 
 int leer_opcion()
@@ -202,10 +203,14 @@ void panel_usuario()
 {
     system("clear");
     Usuario usuario;
+    if (!usuario.exist_file("horario/horarios.txt")) {
+        cout << "Horario aún no generado." << endl;
+        return;
+    }
     usuario.init();
     
     int opcion = -1;
-    while (opcion != 5) {
+    while (opcion != 6) {
         show_menu_usuario();
         opcion = leer_opcion();
         switch (opcion) {
@@ -222,6 +227,9 @@ void panel_usuario()
             mostrar_horario_materia(&usuario);
             break;
         case 5:
+            mostrar_lista_alumnos(&usuario);
+            break;
+        case 6:
             usuario.finish();
             system("clear");
             break;
@@ -235,6 +243,10 @@ void mostrar_horario_docente(Usuario* usuario)
 {
     usuario->new_query();
     string cedula = leer_cedula();
+    if (!usuario->exist_file("horario/horarios.txt")) {
+        cout << "Horario aún no generado." << endl;
+        return;
+    }
     cout << "HORARIO" << endl;
     usuario->show_horario_docente(cedula);
     exportar(usuario);
@@ -296,6 +308,10 @@ void mostrar_horario_estudiante(Usuario* usuario)
 {
     usuario->new_query();
     string cedula = leer_cedula();
+    if (!usuario->exist_file("horario/horarios.txt")) {
+        cout << "Horario aún no generado." << endl;
+        return;
+    }
     cout << "HORARIO" << endl;
     usuario->show_horario_estudiante(cedula);
     exportar(usuario);
@@ -305,6 +321,10 @@ void mostrar_horario_sala(Usuario* usuario)
 {
     usuario->new_query();
     string sala = leer_sala();
+    if (!usuario->exist_file("horario/horarios.txt")) {
+        cout << "Horario aún no generado." << endl;
+        return;
+    }
     cout << "HORARIO" << endl;
     usuario->show_horario_aula(sala);
     exportar(usuario);
@@ -314,6 +334,10 @@ void mostrar_horario_materia(Usuario* usuario)
 {
     usuario->new_query();
     string materia = leer_materia();
+    if (!usuario->exist_file("horario/horarios.txt")) {
+        cout << "Horario aún no generado." << endl;
+        return;
+    }
     cout << "HORARIO" << endl;
     usuario->show_horario_materia(materia);
     exportar(usuario);
@@ -338,7 +362,23 @@ string consultar_exportar()
     return export_path;
 }
 
+void mostrar_lista_alumnos(Usuario* usuario)
+{
+    string materia = leer_materia();
+    if (!usuario->exist_file("horario/horarios.txt")) {
+        cout << "Horario aún no generado." << endl;
+        return;
+    }
+    cout << "LISTA" << endl;
+    usuario->show_estudiantes(materia);
+}
+
 void show_help()
 {
-    
+    ifstream help("leeme.txt");
+    char line[10000] = "";
+    while (!help.eof()) {
+        help.getline(line, sizeof(line));
+        cout << line << endl;
+    }
 }

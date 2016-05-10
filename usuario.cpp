@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "usuario.h"
 #include "estudiantes.h"
@@ -16,7 +17,7 @@ void Usuario::show_horario_estudiante(std::string cedula)
 
 void Usuario::show_horario_materia(std::string materia)
 {
-    // TODO no diferenciar entre minusculas y mayusculas
+    std::transform(materia.begin(), materia.end(), materia.begin(), ::toupper);
     generate_horario_materia(materia);
     for (int dia = 0; dia < 5; dia++) {
         for (int hora = 0; hora < 10; hora++)
@@ -27,7 +28,7 @@ void Usuario::show_horario_materia(std::string materia)
 
 void Usuario::show_horario_aula(std::string codigo)
 {
-    // TODO no diferenciar entre min y mayus
+    std::transform(codigo.begin(), codigo.end(), codigo.begin(), ::toupper);
     generate_horario_aula(codigo);
     for (int dia = 0; dia < 5; dia++) {
         for (int hora = 0; hora < 10; hora++)
@@ -110,6 +111,14 @@ void Usuario::init()
     horarios = horarioparser.get_horarios();
 }
 
+bool Usuario::exist_file(std::string path)
+{
+    if (std::ifstream(path))
+        return true;
+    return false;
+}
+
+
 void Usuario::finish()
 {
     horarios.clear();
@@ -135,4 +144,16 @@ void Usuario::exportar_horario(std::string nombre_destino)
                 flujo_salida << dias[dia] << "," << horas[hora] << "," << horario[hora][dia].nombre << "," + horario[hora][dia].aula << std::endl;
     }
     flujo_salida.close();
+}
+
+void Usuario::show_estudiantes(std::string materia)
+{
+    int i = 1;
+    Estudiantes estudiantes;
+    estudiantes.set_estudiantes_file(ESTUDIANTES_PATH);
+    estudiantes.initsearch();
+    std::vector<std::string> estudiantes_v;
+    while (!(estudiantes_v = estudiantes.next_estudiante(materia)).empty())
+        std::cout << i++ << ") " << estudiantes_v[0] << std::endl;
+    estudiantes.finishsearch();
 }

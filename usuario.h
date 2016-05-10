@@ -33,6 +33,7 @@ struct Usuario {
     void generate_horario_docente(std::string cedula);
     
     void exportar_horario(std::string nombre_destino);
+    bool exist_file(std::string path);
 };
 
 
