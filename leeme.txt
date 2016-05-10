@@ -1,0 +1,111 @@
+Generador de horarios: Manual de usuario
+
+FAQ
+1. Generar horarios
+2. Mostrar horarios
+3. Exportar horarios
+4. Ver archivos
+5. Horarios (leyenda)
+6. Sobre el algoritmo
+
+
+1. Generar horarios
+    Antes de generar los horarios debe contar con los archivos
+    necesarios, que son:
+    
+    - Archivo de aulas. Debe ser un documento tipo csv, el cual
+    debe tener dos columnas: código y capacidad.
+    
+    - Archivo de alumnos. Debe ser un documento tipo csv, el cual
+    debe tener 2 columnas: cédula del estudiante y la materia que
+    va a tomar.
+    
+    - Archivo de docentes. Debe ser un documento tipo csv, el cual
+    debe tener 2 columnas: cédula del docente y nombre.
+    
+    - Archivo de materias. Deber ser un documento tipo csv, el cual
+    debe tener 3 columnas: nombre de la materia, número de horas,
+    cédula del docente que dicta la materia.
+    
+    Una vez listos estos archivos, inicie el programa y diríjase a la
+    sección de administrador. Desde ahí escoja ingresar archivos, e 
+    ingrese ubicación de cada archivo según el programa se lo solicite.
+    
+    Luego en la sección de adminisitrador podrá elegir la opción generar
+    horarios, espere mientras el programa genera los archivos necesarios.
+    
+    Y listo, si todo ha salido bien podrá ir a la sección de usuario a 
+    ver los horarios, si algo no salió bien, quedará registrado en un
+    archivo, ubicación el programa le indicará. También puede visualizar
+    este registro pantalla luego de haber generado el archivo.
+    
+    
+2. Mostrar horarios
+    Una vez generados los horarios, ingrese al programa y dirijase a la
+    sección de usuario. Se le presentarán varias opciones.
+    Escoja la deseada e ingrese la información correspondiente para mostrar
+    el horario.
+    Si se encontraron coincidencias se le presentará el horario, caso 
+    contrario visualizará un horario vacío.
+
+
+3. Exportar horarios
+    Si desea llevar el horario consigo o visualizarlo en cualquier otro lugar
+    tiene la opción de exportar este en formato csv.
+    Para exportar un horario primero debe mostrarlo, una vez mostrado el
+    horario en pantalla el programa le preguntará si desea exportar el horario,
+    presione la tecla 's' y de enter. Seguidamente se le pedirá que ingrese
+    un nombre para su horario. El horario se guardará en la carpeta "export".
+
+
+4. Ver archivos
+    Dentro de la sección de administrador se dispone de una opción que le 
+    permite visualizar arvhivos de texto plano (txt, csv, etc).
+    
+    
+5. Horarios (leyenda)
+    Los horarios mostrado en pantalla varían según el tipo de horario que se
+    consultó, pero en general se puede distinguir lo siguiente:
+    - Usualmente como primer dato se tiene el día, luego el rango de horas.
+    - Luego puede estar el nombre de la materia, y el aula.
+    
+    Si observa un guión '-' en el lugar donde debería estar una materia,
+    significa que no se ha asignado un aula. Esto puede deberse a varias
+    causas, como por ejempo si una materia supera el número máximo de
+    alumnos de todas las salas, o si una materia no cuenta con ningún alumno.
+    
+    Nota* Los archivos exportados si contienen toda la información referente
+    al horario.    
+    
+    
+6. Sobre el algoritmo
+    Dados los archivos necesarios para generar los horarios, el programa
+    colocará de manera estratégica las materias en varios días. Esto lo hace
+    de la siguiente manera:
+    - Primero busca todas las materias que excedan las 6 horas máximas que
+    puede tener una materia.
+    - Luego busca todas las materias que tengan 5 o 6 horas, estas son ubicadas
+    los días lunes, miércoles y viernes.
+    - Luego busca las materias que tengan 3 o 4 horas, se ubica en un día y hora
+    que pueda encajar, y luego se salta un día para serguir completando las horas
+    faltantes.
+    - Por último busca las materias que tengan 1 o 2 horas. Y las ubica en
+    cualquier lugar que esté disponible.
+    
+    En los pasos antes mensionados pueden ocurrir varios problemas. Como que no
+    cuenten con los días/horas necesarias para ubicar una materia en el horario.
+    En ese caso el programa crear otro horario que funcionará en paralelo al
+    otro horario.
+    
+    Luego de haber asignado las materias en el horario se procede a poner los
+    estudiantes en cada materia. Así se puede llevar la cuenta del número de
+    estudiantes que abarca una materia, y mediante esto asignarle una aula de
+    clases. Para esto el programa escoge el aula que tenga suficientes puestos
+    (ni en exceso ni menos). En caso que el número de estudiantes de una materia
+    sobrepase al número de puestos de todas las aulas, la materia quedará sin
+    asignarle un aula (representado por un guión '-'). Si la materia no tiene
+    alumnos, también quedará sin asignarle un aula.
+    
+    De esta manera se ha logrado tener una distribución eficiente de las materias
+    y aulas según el número de estudiantes y la carga horaria.   
+ 
