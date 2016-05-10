@@ -16,7 +16,7 @@ struct Administrador {
     bool set_estudiantes_file(std::string path);
     bool set_docentes_file(std::string path);
     bool set_materias_file(std::string path);
-    void generar_horarios();
+    bool generar_horarios();
     bool archivos_introducidos();
     
     void show_logfile();

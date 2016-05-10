@@ -2,12 +2,14 @@
 
 #include "administrador.h"
 
-void Administrador::generar_horarios()
+bool Administrador::generar_horarios()
 {
-    if (archivos_introducidos())
-        horario.generate();
-    else
+    if (!archivos_introducidos()) {
         std::cout << "No ha ingresado los archivos necesarios para generar los horarios." << std::endl;
+        return false;
+    }
+    horario.generate();
+    return true;
 }
 
 bool Administrador::archivos_introducidos()
@@ -20,6 +22,7 @@ bool Administrador::set_aulas_file(std::string path)
 {
     if (!exist_file(path))
         return false;
+    aulas_path = path;
     horario.set_aulas_file(path);
     return true;
 }
@@ -28,6 +31,7 @@ bool Administrador::set_docentes_file(std::string path)
 {
     if (!exist_file(path))
         return false;
+    docentes_path = path;
     horario.set_docentes_file(path);
     return true;
 }
@@ -36,6 +40,7 @@ bool Administrador::set_estudiantes_file(std::string path)
 {
     if (!exist_file(path))
         return false;
+    estudiantes_path = path;
     horario.set_estudiantes_file(path);
     return true;
 }
@@ -44,6 +49,7 @@ bool Administrador::set_materias_file(std::string path)
 {
     if (!exist_file(path))
         return false;
+    materias_path = path;
     horario.set_materias_file(path);
     return true;
 }
