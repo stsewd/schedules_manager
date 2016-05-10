@@ -11,7 +11,9 @@ struct Usuario {
     const std::string MATERIAS_PATH = "horario/estudiantes.csv";
     const std::string DOCENTES_PATH = "horario/estudiantes.csv";
     std::array<std::string, 5> dias = {{"Lunes", "Martes", "Miércoles", "Jueves", "Viernes"}};
-    std::array<std::string, 10> horas = {{"7 - 8", "8 - 9", "9 -10", "10 - 11", "11 - 12", "12 - 13", "15 - 16", "16 - 17", "17 - 18", "18 - 19"}};
+    std::array<std::string, 10> horas = {{"7 - 8", "8 - 9", "9 -10", "10 - 11", "11 - 12", "12 - 13",
+                                          "15 - 16", "16 - 17", "17 - 18", "18 - 19"}
+                                         };
     
     std::vector<std::array<std::array<Materia, 5>, 10>> horarios;
     
@@ -27,8 +29,10 @@ struct Usuario {
     
     void generate_horario_materia(std::string materia);
     void generate_horario_estudiante(std::string cedula);
+    void generate_horario_aula(std::string codigo);
+    void generate_horario_docente(std::string cedula);
     
-    bool exportar_horario(std::string nombre_destino);
+    void exportar_horario(std::string nombre_destino);
 };
 
 

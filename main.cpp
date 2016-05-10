@@ -17,6 +17,9 @@ void show_menu_administrador();
 void show_menu_usuario();
 
 int leer_opcion();
+string leer_cedula();
+string leer_materia();
+string leer_sala();
 
 void panel_administrador();
 void panel_usuario();
@@ -26,11 +29,18 @@ void ingresar_archivos_csv_adm(Administrador* admin);
 void ver_archivos_adm(Administrador* admin);
 void generar_horarios_adm(Administrador* admin);
 
+void mostrar_horario_docente(Usuario* usuario);
+void mostrar_horario_estudiante(Usuario* usuario);
+void mostrar_horario_sala(Usuario* usuario);
+void mostrar_horario_materia(Usuario* usuario);
+string consultar_exportar();
+void exportar(Usuario* usuario);
 
 int main(int argc, char** argv)
 {
-    Usuario usuario;
-    
+    // TODO listar estudiantes de una materia, agregar opcion al menu?
+    // TODO Redactar ayuda
+    // TODO implementar caché en busquedas
     int opcion = -1;
     while (opcion != 4) {
         show_menu();
@@ -51,25 +61,6 @@ int main(int argc, char** argv)
             cout << "Opcion incorrecta. Vuelva a intentarlo." << endl;
         }
     }
-    
-    /*
-    Horario horario;
-    
-    horario.set_aulas_file("resources/aulas.csv");
-    horario.set_docentes_file("resources/docentes.csv");
-    horario.set_estudiantes_file("resources/alumnos.csv");
-    horario.set_materias_file("resources/materias.csv");
-    horario.generate();
-    */
-    
-    
-    // TODO Establecer acciones del docente
-    // TODO Establecer acciones del estudiante
-    // TODO Quien puede ver el horario de una sala?
-    // TODO Redactar ayuda
-    // TODO mostrar horarios en pantalla
-    
-    // TODO implementar caché en busquedas
     return 0;
 }
 
@@ -94,6 +85,11 @@ void show_menu_administrador()
 void show_menu_usuario()
 {
     cout << "ZONA DE USUARIO" << endl;
+    cout << "1) Ver horario de un docente" << endl;
+    cout << "2) Ver horario de un estudiante" << endl;
+    cout << "3) Ver horario de una sala" << endl;
+    cout << "4) Ver horario de una materia" << endl;
+    cout << "5) Atras" << endl;
 }
 
 int leer_opcion()
@@ -204,7 +200,142 @@ void generar_horarios_adm(Administrador* admin)
 
 void panel_usuario()
 {
-    // TODO
+    system("clear");
+    Usuario usuario;
+    usuario.init();
+    
+    int opcion = -1;
+    while (opcion != 5) {
+        show_menu_usuario();
+        opcion = leer_opcion();
+        switch (opcion) {
+        case 1:
+            mostrar_horario_docente(&usuario);
+            break;
+        case 2:
+            mostrar_horario_estudiante(&usuario);
+            break;
+        case 3:
+            mostrar_horario_sala(&usuario);
+            break;
+        case 4:
+            mostrar_horario_materia(&usuario);
+            break;
+        case 5:
+            usuario.finish();
+            system("clear");
+            break;
+        default:
+            cout << "Opcion incorrecta. Vuelva a intentarlo." << endl;
+        }
+    }
+}
+
+void mostrar_horario_docente(Usuario* usuario)
+{
+    usuario->new_query();
+    string cedula = leer_cedula();
+    cout << "HORARIO" << endl;
+    usuario->show_horario_docente(cedula);
+    exportar(usuario);
+}
+
+void exportar(Usuario* usuario)
+{
+    string export_path = consultar_exportar();
+    if (export_path != "") {
+        usuario->exportar_horario(export_path);
+        cout << "Horario exportado a: export/" << export_path << ".csv" << endl;
+    }
+}
+
+string leer_cedula()
+{
+    string cedula;
+    regex cedula_regex("^\\d{10}$");
+    while (true) {
+        cout << "Ingrese un numero de cédula válido: " << endl;
+        cin >> cedula;
+        cin.ignore(1024, '\n');
+        if (regex_match(cedula, cedula_regex))
+            break;
+        cout << "Cedula no válida" << endl;
+    }
+    return cedula;
+}
+
+string leer_materia()
+{
+    string materia;
+    regex materia_regex("^.+$");
+    while (true) {
+        cout << "Ingrese el nombre de la materia:" << endl;
+        getline(cin, materia);
+        if (regex_match(materia, materia_regex))
+            break;
+        cout << "Nombre no válido" << endl;
+    }
+    return materia;
+}
+
+string leer_sala()
+{
+    string sala;
+    regex sala_regex("^.+$");
+    while (true) {
+        cout << "Ingrese el código de la sala:" << endl;
+        getline(cin, sala);
+        if (regex_match(sala, sala_regex))
+            break;
+        cout << "Sala no válida" << endl;
+    }
+    return sala;
+}
+
+void mostrar_horario_estudiante(Usuario* usuario)
+{
+    usuario->new_query();
+    string cedula = leer_cedula();
+    cout << "HORARIO" << endl;
+    usuario->show_horario_estudiante(cedula);
+    exportar(usuario);
+}
+
+void mostrar_horario_sala(Usuario* usuario)
+{
+    usuario->new_query();
+    string sala = leer_sala();
+    cout << "HORARIO" << endl;
+    usuario->show_horario_aula(sala);
+    exportar(usuario);
+}
+
+void mostrar_horario_materia(Usuario* usuario)
+{
+    usuario->new_query();
+    string materia = leer_materia();
+    cout << "HORARIO" << endl;
+    usuario->show_horario_materia(materia);
+    exportar(usuario);
+}
+
+string consultar_exportar()
+{
+    string export_path;
+    regex regex_nombre("\\w+");
+    cout << "¿Desea exportar el horario? (s/n)" << endl;
+    char opc = getchar();
+    if (opc != 's' && opc != 'S')
+        return "";
+    
+    while (true) {
+        cout << "Ingrese el nombre del horario: " << endl;
+        getline(cin, export_path);
+        if (regex_match(export_path, regex_nombre))
+            break;
+        cout << "Nombre no valido" << endl;
+    }
+    return export_path;
 }
 
 void show_help()
